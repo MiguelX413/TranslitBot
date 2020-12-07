@@ -1,4 +1,5 @@
 import logging
+import os
 from uuid import uuid4
 import scriptcon
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent, Update
@@ -37,7 +38,7 @@ def inlinequery(update: Update, context: CallbackContext) -> None:
 
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-updater = Updater('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', use_context=True)
+updater = Updater(os.environ["TG_TOKEN"], use_context=True)
 dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(CommandHandler("help", help_command))

@@ -6,16 +6,6 @@ from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageConten
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackContext
 from telegram.utils.helpers import escape_markdown
 
-def start(update: Update, context: CallbackContext) -> None:
-	"""Send a message when the command /start is issued."""
-	update.message.reply_text('Hi!')
-
-
-def help_command(update: Update, context: CallbackContext) -> None:
-	"""Send a message when the command /help is issued."""
-	update.message.reply_text('Help!')
-
-
 def inlinequery(update: Update, context: CallbackContext) -> None:
 	"""Handle the inline query."""
 	query = update.inline_query.query

@@ -1,14 +1,18 @@
 import unicodedata
 
 def preCommon(text):
+#	text = unicodedata.normalize('NFC', unicodedata.normalize('NFD', text))
 	text = text.replace('ng','ŋ')
 	return(text)
 
 def postCommon(text):
 	text = unicodedata.normalize('NFC', unicodedata.normalize('NFD', text))
+	text = text.replace('\\','')
 	return(text)
 
 def toCyrillic(text):
+	text = preCommon(text)
+	text = unicodedata.normalize('NFD', text)
 	dataCyrillic = [
 	('Pf','ԥ'),
 	('pF','ԥ'),
@@ -32,9 +36,11 @@ def toCyrillic(text):
 	b = 'аӕбдегиклмнопртуүҥ'
 	b = b + b.upper()
 	text = text.translate(str.maketrans(a,b))
+	text = unicodedata.normalize('NFC', text)
 	return(postCommon(text))
 
 def toKatakana(text):
+	text = preCommon(text)
 	finals = {ord('b'):'ㇷ゙', ord('d'):'ㇳ゙', ord('g'): 'ㇰ゙', ord('k'): 'ㇰ', ord('l'): 'ㇽ゚', ord('m'): 'ㇺ', ord('n'): 'ン', ord('p'): 'ㇷ゚', ord('r'): 'ㇽ', ord('t'): 'ㇳ', ord('ŋ'): 'ㇰ゚'}
 	
 	
@@ -93,12 +99,22 @@ def toKatakana(text):
 
 
 def toLontara(text):
-	dataCyrillic = [('pf','ᨓ'),('tþ','ᨔ'),('kx','ᨖ')]
-	for x in dataCyrillic:
+	text = preCommon(text)
+	dataLontara = [('pf','ᨓ'),('tþ','ᨔ'),('kx','ᨖ')]
+	consonants = 'ᨅᨉᨁᨀᨒᨆᨊᨄᨑᨈᨂᨓᨔᨖ'
+	for x in dataLontara:
 		text = text.replace(x[0],x[1])
 	a = 'bdgklmnprtŋ'
 	a = a + a.upper()
 	b = 'ᨅᨉᨁᨀᨒᨆᨊᨄᨑᨈᨂ'
 	b = b + b
 	text = text.translate(str.maketrans(a,b))
+
+	for vowel in [('i', 'ᨗ'), ('u', 'ᨘ'), ('e', 'ᨙ'), ('o', 'ᨚ')]:
+		while vowel[0] in text:
+			if text[text.find(vowel[0])-1] in consonants:
+				text = text.replace(vowel[0], vowel[1], 1)
+			else:
+				text = text.replace(vowel[0], 'ᨀ'+vowel[1], 1)
+
 	return(postCommon(text))

@@ -50,13 +50,13 @@ def toKatakana(text):
 	for x in [('kxa','カㇵ'),('kxi','キㇶ'),('kxu','クㇷ'),('kxe','ケㇸ'),('kxo','コㇹ')]:
 		text = text.replace(x[0],x[1])
 
-	for x in [('ta','タ'),('ti','チ'),('tu','ツ'),('te','テ'),('to','ト')]:
+	for x in [('ta','タ'),('ti','ティ'),('tu','トゥ'),('te','テ'),('to','ト')]:
 		text = text.replace(x[0],x[1])
 
-	for x in [('da','ダ'),('di','ヂ'),('du','ヅ'),('de','デ'),('do','ド')]:
+	for x in [('da','ダ'),('di','ディ'),('du','ドゥ'),('de','デ'),('do','ド')]:
 		text = text.replace(x[0],x[1])
 
-	for x in [('tþa','タ゚'),('tþi','チ゚'),('tþu','ツ゚'),('tþe','テ゚'),('tþo','ト゚')]:
+	for x in [('tþa','タ゚'),('tþi','テ゚ィ'),('tþu','ト゚ゥ'),('tþe','テ゚'),('tþo','ト゚')]:
 		text = text.replace(x[0],x[1])
 
 	for x in [('na','ナ'),('ni','ニ'),('nu','ヌ'),('ne','ネ'),('no','ノ')]:

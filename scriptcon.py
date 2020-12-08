@@ -112,7 +112,7 @@ def toLontara(text):
 
 	for vowel in [('i', 'ᨗ'), ('u', 'ᨘ'), ('e', 'ᨙ'), ('o', 'ᨚ')]:
 		while vowel[0] in text:
-			if text[text.find(vowel[0])-1] in consonants:
+			if text[text.find(vowel[0])-1] in consonants and text.find(vowel[0]) > 0:
 				text = text.replace(vowel[0], vowel[1], 1)
 			else:
 				text = text.replace(vowel[0], 'ᨀ'+vowel[1], 1)

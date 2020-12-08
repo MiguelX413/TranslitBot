@@ -30,8 +30,6 @@ logging.basicConfig(level=logging.DEBUG,format='%(asctime)s - %(name)s - %(level
 
 updater = Updater(os.environ["TG_TOKEN"], use_context=True)
 dispatcher = updater.dispatcher
-dispatcher.add_handler(CommandHandler("start", start))
-dispatcher.add_handler(CommandHandler("help", help_command))
 dispatcher.add_handler(InlineQueryHandler(inlinequery))
 updater.start_polling()
 updater.idle()

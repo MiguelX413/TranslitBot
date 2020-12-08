@@ -14,19 +14,19 @@ def toCyrillic(text):
 	text = preCommon(text)
 	text = unicodedata.normalize('NFD', text)
 	dataCyrillic = [
-	('Pf','ԥ'),
+	('Pf','Ԥ'),
 	('pF','ԥ'),
-	('PF','ԥ'),
+	('PF','Ԥ'),
 	('pf','ԥ'),
 #----
-	('Tþ','ҭ'),
+	('Tþ','Ҭ'),
 	('tÞ','ҭ'),
-	('TÞ','ҭ'),
+	('TÞ','Ҭ'),
 	('tþ','ҭ'),
 #----
-	('Kx','қ'),
+	('Kx','Қ'),
 	('kX','қ'),
-	('KX','қ'),
+	('KX','Қ'),
 	('kx','қ')
 	]
 	for x in dataCyrillic:
@@ -41,6 +41,7 @@ def toCyrillic(text):
 
 def toKatakana(text):
 	text = preCommon(text)
+	text = text.lower()
 	finals = {ord('b'):'ㇷ゙', ord('d'):'ㇳ゙', ord('g'): 'ㇰ゙', ord('k'): 'ㇰ', ord('l'): 'ㇽ゚', ord('m'): 'ㇺ', ord('n'): 'ン', ord('p'): 'ㇷ゚', ord('r'): 'ㇽ', ord('t'): 'ㇳ', ord('ŋ'): 'ㇰ゚'}
 	
 	

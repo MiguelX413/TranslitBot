@@ -101,6 +101,7 @@ def toKatakana(text):
 
 def toLontara(text):
 	text = preCommon(text)
+	text = text.lower()
 	dataLontara = [('pf','ᨓ'),('tþ','ᨔ'),('kx','ᨖ')]
 	consonants = 'ᨅᨉᨁᨀᨒᨆᨊᨄᨑᨈᨂᨓᨔᨖ'
 	for x in dataLontara:

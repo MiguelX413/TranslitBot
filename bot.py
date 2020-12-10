@@ -1,6 +1,5 @@
 import logging
 import os
-from uuid import uuid4
 import scriptcon
 from telegram import (
     InlineQueryResultArticle,
@@ -35,19 +34,19 @@ def inlinequery(update: Update, context: CallbackContext) -> None:
     lontaraResult = scriptcon.convert(query.lower(), dictdata["Lontara"])
     results = [
         InlineQueryResultArticle(
-            id=uuid4(),
+            id=1,
             title="Cyrillic",
             description=cyrillicResult,
             input_message_content=InputTextMessageContent(cyrillicResult),
         ),
         InlineQueryResultArticle(
-            id=uuid4(),
+            id=2,
             title="Katakana",
             description=katakanaResult,
             input_message_content=InputTextMessageContent(katakanaResult),
         ),
         InlineQueryResultArticle(
-            id=uuid4(),
+            id=3,
             title="Lontara",
             description=lontaraResult,
             input_message_content=InputTextMessageContent(lontaraResult),

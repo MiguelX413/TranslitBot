@@ -30,8 +30,8 @@ def inlinequery(update: Update, context: CallbackContext) -> None:
     """Handle the inline query."""
     query = update.inline_query.query
     cyrillicResult = scriptcon.convert(query, dictdata["Cyrillic"])
-    katakanaResult = scriptcon.convert(query.lower(), dictdata["Katakana"])
-    lontaraResult = scriptcon.convert(query.lower(), dictdata["Lontara"])
+    katakanaResult = scriptcon.convert(query, dictdata["Katakana"])
+    lontaraResult = scriptcon.convert(query, dictdata["Lontara"])
     results = [
         InlineQueryResultArticle(
             id=1,

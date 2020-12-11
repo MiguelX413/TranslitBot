@@ -1,12 +1,43 @@
 import json
 
 
-def gentable(dictionary):
-    return {
-        "min": len(min(dictionary, key=len)),
-        "max": len(max(dictionary, key=len)),
-        "dict": dictionary,
-    }
+def gendict(
+    main,
+    revmain=False,
+    preproc=False,
+    revpreproc=False,
+    postproc=False,
+    revpostproc=False,
+    demacron=False,
+    decomposed=False,
+    tolowercase=False,
+):
+    dict = {}
+    if main:
+        dict["main"] = {
+            "min": len(min(main, key=len)),
+            "max": len(max(main, key=len)),
+            "rev": revmain,
+            "data": main,
+        }
+    if preproc:
+        dict["preproc"] = {
+            "min": len(min(preproc, key=len)),
+            "max": len(max(preproc, key=len)),
+            "rev": revpreproc,
+            "data": main,
+        }
+    if postproc:
+        dict["postproc"] = {
+            "min": len(min(postproc, key=len)),
+            "max": len(max(postproc, key=len)),
+            "rev": revpostproc,
+            "data": main,
+        }
+    dict["demacron"] = demacron
+    dict["decomposed"] = decomposed
+    dict["tolowercase"] = tolowercase
+    return dict
 
 
 cyrillic = {}
@@ -52,7 +83,7 @@ cyrillic["KX"] = "Қ"
 cyrillic["kx"] = "қ"
 
 
-katakana = {
+katakanaMain = {
     "ka": "カ",
     "ki": "キ",
     "ku": "ク",
@@ -196,9 +227,9 @@ del lontara[""]
 
 data = {}
 
-data["Lontara"] = gentable(lontara)
-data["Katakana"] = gentable(katakana)
-data["Cyrillic"] = gentable(cyrillic)
+data["Lontara"] = gendict(lontara, False, demacron=True, tolowercase=True)
+data["Katakana"] = gendict(katakanaMain, False, demacron=True, tolowercase=True)
+data["Cyrillic"] = gendict(cyrillic, False, decomposed=True)
 
 out = json.dumps(data, sort_keys=True, indent=4)
 f = open("dict.json", "w")

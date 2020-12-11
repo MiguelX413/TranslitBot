@@ -25,14 +25,14 @@ def gendict(
             "min": len(min(preproc, key=len)),
             "max": len(max(preproc, key=len)),
             "rev": revpreproc,
-            "data": main,
+            "data": preproc,
         }
     if postproc:
         dict["postproc"] = {
             "min": len(min(postproc, key=len)),
             "max": len(max(postproc, key=len)),
             "rev": revpostproc,
-            "data": main,
+            "data": postproc,
         }
     dict["demacron"] = demacron
     dict["decomposed"] = decomposed
@@ -40,6 +40,7 @@ def gendict(
     return dict
 
 
+data = {}
 cyrillic = {}
 
 cyrillicpairs = [
@@ -81,6 +82,14 @@ cyrillic["Kx"] = "Қ"
 cyrillic["kX"] = "қ"
 cyrillic["KX"] = "Қ"
 cyrillic["kx"] = "қ"
+
+data["Cyrillic"] = gendict(cyrillic, False, decomposed=True)
+
+
+katakanaPre = {}
+
+for Kvowel in ("a", "i", "u", "e", "o"):
+    katakanaPre[Kvowel + Kvowel] = Kvowel + "ー"
 
 
 katakanaMain = {
@@ -198,6 +207,16 @@ katakanaMain = {
 }
 
 
+data["Katakana"] = gendict(
+    katakanaMain,
+    revmain=False,
+    preproc=katakanaPre,
+    revpreproc=True,
+    demacron=True,
+    tolowercase=True,
+)
+
+
 # Lontara Dict Generator
 lontara = {}
 lontaraConsonants = {
@@ -225,11 +244,7 @@ for x in lontaraConsonants:
 
 del lontara[""]
 
-data = {}
-
 data["Lontara"] = gendict(lontara, False, demacron=True, tolowercase=True)
-data["Katakana"] = gendict(katakanaMain, False, demacron=True, tolowercase=True)
-data["Cyrillic"] = gendict(cyrillic, False, decomposed=True)
 
 out = json.dumps(data, sort_keys=True, indent=4)
 f = open("dict.json", "w")

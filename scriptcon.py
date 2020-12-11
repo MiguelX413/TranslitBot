@@ -37,8 +37,9 @@ def convert(text, dictionary, vowels=("a", "i", "u", "e", "o", "æ", "y")):
         if dictionary.get(step):
             if dictionary[step].get("rev") == False:
                 for size in range(
-                    dictionary[step].get("max", 5),
-                    dictionary[step].get("min", 1) - 1,
+                    dictionary[step].get("max", len(max(dictionary[step], key=len))),
+                    dictionary[step].get("min", len(min(dictionary[step], key=len)))
+                    - 1,
                     -1,
                 ):
                     index = 0
@@ -51,7 +52,29 @@ def convert(text, dictionary, vowels=("a", "i", "u", "e", "o", "æ", "y")):
                             dictionary[step]["data"].get(
                                 text[index : index + size], text[index : index + size]
                             ),
+                            1,
                         )
                         index = index + 1
 
+            else:
+                for size in range(
+                    dictionary[step].get("max", len(max(dictionary[step], key=len))),
+                    dictionary[step].get("min", len(min(dictionary[step], key=len)))
+                    - 1,
+                    -1,
+                ):
+                    index = 0
+                    while len(text) - index - size >= 0:
+                        # print(text)
+                        # print(len(text))
+                        # print(text[index : index + size])
+                        text = text[::-1].replace(
+                            text[len(text) - index - size : len(text) - index][::-1],
+                            dictionary[step]["data"].get(
+                                text[len(text) - index - size : len(text) - index],
+                                text[len(text) - index - size : len(text) - index],
+                            )[::-1],
+                            1,
+                        )[::-1]
+                        index = index + 1
     return unicodedata.normalize("NFC", text)

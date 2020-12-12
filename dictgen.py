@@ -41,7 +41,22 @@ def gendict(
 
 
 data = {}
-cyrillic = {}
+cyrillic = {
+    "Pf": "Ԥ",
+    "pF": "ԥ",
+    "PF": "Ԥ",
+    "pf": "ԥ",
+    #
+    "Tþ": "Ҭ",
+    "tÞ": "ҭ",
+    "TÞ": "Ҭ",
+    "tþ": "ҭ",
+    #
+    "Kx": "Қ",
+    "kX": "қ",
+    "KX": "Қ",
+    "kx": "қ",
+}
 
 cyrillicpairs = [
     ("a", "а"),
@@ -68,22 +83,7 @@ for x in cyrillicpairs:
     cyrillic[x[0].lower()] = x[1].lower()
     cyrillic[x[0].upper()] = x[1].upper()
 
-cyrillic["Pf"] = "Ԥ"
-cyrillic["pF"] = "ԥ"
-cyrillic["PF"] = "Ԥ"
-cyrillic["pf"] = "ԥ"
-#
-cyrillic["Tþ"] = "Ҭ"
-cyrillic["tÞ"] = "ҭ"
-cyrillic["TÞ"] = "Ҭ"
-cyrillic["tþ"] = "ҭ"
-#
-cyrillic["Kx"] = "Қ"
-cyrillic["kX"] = "қ"
-cyrillic["KX"] = "Қ"
-cyrillic["kx"] = "қ"
-
-data["Cyrillic"] = gendict(cyrillic, False, decomposed=True)
+data["Cyrillic"] = gendict(cyrillic, decomposed=True)
 
 
 katakanaPre = {}

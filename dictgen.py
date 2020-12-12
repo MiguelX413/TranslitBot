@@ -218,7 +218,7 @@ data["Katakana"] = gendict(
 
 
 # Lontara Dict Generator
-lontara = {}
+lontara = {",": "᨞", ".": "᨟"}
 lontaraConsonants = {
     "b": "ᨅ",
     "d": "ᨉ",

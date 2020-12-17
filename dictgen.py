@@ -205,6 +205,11 @@ katakanaMain = {
     ". ": "。",
     ", ": "、",
     "! ": "！",
+    "-": "―",
+    "+": "＋",
+    "(": "（",
+    ")": "）",
+    "~": "〜",
 }
 
 
@@ -237,7 +242,7 @@ lontaraConsonants = {
     "kx": "ᨖ",
     "": "ᨕ",
 }
-lontaraAttachments = {"": "̲", "a": "", "i": "ᨗ", "u": "ᨘ", "e": "ᨙ", "o": "ᨚ"}
+lontaraAttachments = {"": "̲", "a": "", "i": "ᨗ", "u": "ᨘ", "e": "ᨙ", "o": "ᨚ", "æ": "ᨛ"}
 
 for x in lontaraConsonants:
     for y in lontaraAttachments:

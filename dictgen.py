@@ -242,7 +242,7 @@ lontaraConsonants = {
     "kx": "ᨖ",
     "": "ᨕ",
 }
-lontaraAttachments = {"": "̲", "a": "", "i": "ᨗ", "u": "ᨘ", "e": "ᨙ", "o": "ᨚ", "æ": "ᨛ"}
+lontaraAttachments = {"": "̲", "a": "", "i": "ᨗ", "u": "ᨘ", "e": "ᨙ", "o": "ᨚ", "æ": "ᨛ", "y": "︠"}
 
 for x in lontaraConsonants:
     for y in lontaraAttachments:

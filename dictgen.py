@@ -10,7 +10,7 @@ def gendict(
     revpostproc=False,
     demacron=False,
     decomposed=False,
-    tolowercase=False,
+    capsinsensitive=False,
 ):
     dict = {}
     if main:
@@ -36,7 +36,7 @@ def gendict(
         }
     dict["demacron"] = demacron
     dict["decomposed"] = decomposed
-    dict["tolowercase"] = tolowercase
+    dict["capsinsensitive"] = capsinsensitive
     return dict
 
 
@@ -219,7 +219,7 @@ data["Katakana"] = gendict(
     preproc=katakanaPre,
     revpreproc=True,
     demacron=True,
-    tolowercase=True,
+    capsinsensitive=True,
 )
 
 
@@ -242,7 +242,16 @@ lontaraConsonants = {
     "kx": "ᨖ",
     "": "ᨕ",
 }
-lontaraAttachments = {"": "̲", "a": "", "i": "ᨗ", "u": "ᨘ", "e": "ᨙ", "o": "ᨚ", "æ": "ᨛ", "y": "︠"}
+lontaraAttachments = {
+    "": "̲",
+    "a": "",
+    "i": "ᨗ",
+    "u": "ᨘ",
+    "e": "ᨙ",
+    "o": "ᨚ",
+    "æ": "ᨛ",
+    "y": "︠",
+}
 
 for x in lontaraConsonants:
     for y in lontaraAttachments:
@@ -250,7 +259,7 @@ for x in lontaraConsonants:
 
 del lontara[""]
 
-data["Lontara"] = gendict(lontara, False, demacron=True, tolowercase=True)
+data["Lontara"] = gendict(lontara, False, demacron=True, capsinsensitive=True)
 
 out = json.dumps(data, sort_keys=True, indent=4)
 f = open("dict.json", "w")

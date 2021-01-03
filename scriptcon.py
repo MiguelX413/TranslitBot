@@ -30,9 +30,6 @@ def convert(text, dictionary, vowels=("a", "i", "u", "e", "o", "æ", "y")):
     if dictionary.get("decomposed"):
         text = unicodedata.normalize("NFD", text)
 
-    if dictionary.get("tolowercase"):
-        text = text.lower()
-
     for step in ("preproc", "main", "postproc"):
         if dictionary.get(step):
             if dictionary[step].get("rev") == False:
@@ -44,16 +41,24 @@ def convert(text, dictionary, vowels=("a", "i", "u", "e", "o", "æ", "y")):
                 ):
                     index = 0
                     while index <= len(text) - size:
-                        # print(text)
-                        # print(len(text))
-                        # print(text[index : index + size])
-                        text = text.replace(
-                            text[index : index + size],
-                            dictionary[step]["data"].get(
-                                text[index : index + size], text[index : index + size]
-                            ),
-                            1,
-                        )
+                        if dictionary.get("capsinsensitive") == False:
+                            text = text.replace(
+                                text[index : index + size],
+                                dictionary[step]["data"].get(
+                                    text[index : index + size],
+                                    text[index : index + size],
+                                ),
+                                1,
+                            )
+                        else:
+                            text = text.replace(
+                                text[index : index + size],
+                                dictionary[step]["data"].get(
+                                    text[index : index + size].lower(),
+                                    text[index : index + size],
+                                ),
+                                1,
+                            )
                         index = index + 1
 
             else:
@@ -68,13 +73,29 @@ def convert(text, dictionary, vowels=("a", "i", "u", "e", "o", "æ", "y")):
                         # print(text)
                         # print(len(text))
                         # print(text[index : index + size])
-                        text = text[::-1].replace(
-                            text[len(text) - index - size : len(text) - index][::-1],
-                            dictionary[step]["data"].get(
-                                text[len(text) - index - size : len(text) - index],
-                                text[len(text) - index - size : len(text) - index],
-                            )[::-1],
-                            1,
-                        )[::-1]
+                        if dictionary.get("capsinsensitive") == False:
+                            text = text[::-1].replace(
+                                text[len(text) - index - size : len(text) - index][
+                                    ::-1
+                                ],
+                                dictionary[step]["data"].get(
+                                    text[len(text) - index - size : len(text) - index],
+                                    text[len(text) - index - size : len(text) - index],
+                                )[::-1],
+                                1,
+                            )[::-1]
+                        else:
+                            text = text[::-1].replace(
+                                text[len(text) - index - size : len(text) - index][
+                                    ::-1
+                                ],
+                                dictionary[step]["data"].get(
+                                    text[
+                                        len(text) - index - size : len(text) - index
+                                    ].lower(),
+                                    text[len(text) - index - size : len(text) - index],
+                                )[::-1],
+                                1,
+                            )[::-1]
                         index = index + 1
     return unicodedata.normalize("NFC", text)

@@ -12,8 +12,7 @@ from telegram.utils.helpers import escape_markdown
 import json
 
 if __name__ == "__main__":
-    # token = os.environ["TG_TOKEN"]
-    token = "1455731609:AAF9l2FMTGJY_kYtrxzeqq-8nmzuchCkAQ4"
+    token = os.environ["TG_TOKEN"]
     try:
         with open("dict.json", "r") as f:
             dictdata = json.loads(f.read())

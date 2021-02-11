@@ -1,42 +1,34 @@
 import json
+import unicodedata
 
 
 def gendict(
-    main,
-    revmain=False,
-    preproc=False,
-    revpreproc=False,
-    postproc=False,
-    revpostproc=False,
-    demacron=False,
-    decomposed=False,
-    capsinsensitive=False,
+    subdicts=[
+        {"reverse": False, "decomposed": False, "caps_insensitive": False, "data": {}}
+    ],
 ):
-    dict = {}
-    if main:
-        dict["main"] = {
-            "min": len(min(main, key=len)),
-            "max": len(max(main, key=len)),
-            "rev": revmain,
-            "data": main,
-        }
-    if preproc:
-        dict["preproc"] = {
-            "min": len(min(preproc, key=len)),
-            "max": len(max(preproc, key=len)),
-            "rev": revpreproc,
-            "data": preproc,
-        }
-    if postproc:
-        dict["postproc"] = {
-            "min": len(min(postproc, key=len)),
-            "max": len(max(postproc, key=len)),
-            "rev": revpostproc,
-            "data": postproc,
-        }
-    dict["demacron"] = demacron
-    dict["decomposed"] = decomposed
-    dict["capsinsensitive"] = capsinsensitive
+    dict = []
+
+    for x in subdicts:
+        data = x.get("data")
+        for sub_length in range(
+            len(max(data, key=len)),
+            len(min(data, key=len)) - 1,
+            -1,
+        ):
+            tempdict = {}
+            for item in data:
+                if len(item) == sub_length:
+                    tempdict[item] = data[item]
+            dict.append(
+                {
+                    "sub_length": sub_length,
+                    "reverse": x.get("reverse", False),
+                    "decomposed": x.get("decomposed", False),
+                    "caps_insensitive": x.get("caps_insensitive", False),
+                    "data": tempdict,
+                }
+            )
     return dict
 
 
@@ -46,6 +38,11 @@ cyrillic = {
     "pF": "ԥ",
     "PF": "Ԥ",
     "pf": "ԥ",
+    #
+    "Ts": "Ц",
+    "tS": "ц",
+    "TS": "Ц",
+    "ts": "ц",
     #
     "Tþ": "Ҭ",
     "tÞ": "ҭ",
@@ -66,6 +63,7 @@ cyrillicpairs = [
     ("e", "е"),
     ("g", "г"),
     ("i", "и"),
+    ("j", "ј"),
     ("k", "к"),
     ("l", "л"),
     ("m", "м"),
@@ -75,6 +73,7 @@ cyrillicpairs = [
     ("r", "р"),
     ("t", "т"),
     ("u", "у"),
+    ("w", "ў"),
     ("y", "ү"),
     ("ŋ", "ҥ"),
 ]
@@ -83,16 +82,25 @@ for x in cyrillicpairs:
     cyrillic[x[0].lower()] = x[1].lower()
     cyrillic[x[0].upper()] = x[1].upper()
 
-data["Cyrillic"] = gendict(cyrillic, decomposed=True)
+data["Cyrillic"] = gendict(
+    [
+        {"decomposed": True, "data": cyrillic},
+    ]
+)
+
+katakana0 = {}
+
+for vowel in ("a", "i", "u", "e", "o"):
+    katakana0[unicodedata.normalize("NFC", vowel + "̄")] = vowel + vowel
 
 
-katakanaPre = {}
+katakana1 = {}
 
-for Kvowel in ("a", "i", "u", "e", "o"):
-    katakanaPre[Kvowel + Kvowel] = Kvowel + "ー"
+for vowel in ("a", "i", "u", "e", "o"):
+    katakana1[vowel + vowel] = vowel + "ー"
 
 
-katakanaMain = {
+katakana2 = {
     "ka": "カ",
     "ki": "キ",
     "ku": "ク",
@@ -111,11 +119,11 @@ katakanaMain = {
     "ŋe": "ケ゚",
     "ŋo": "コ゚",
     #
-    "kxa": "カ̲",
-    "kxi": "キ̲",
-    "kxu": "ク̲",
-    "kxe": "ケ̲",
-    "kxo": "コ̲",
+    "kxa": "カ̣",
+    "kxi": "キ̣",
+    "kxu": "ク̣",
+    "kxe": "ケ̣",
+    "kxo": "コ̣",
     #
     "ta": "タ",
     "ti": "ティ",
@@ -129,11 +137,17 @@ katakanaMain = {
     "de": "デ",
     "do": "ド",
     #
-    "tþa": "タ̲",
-    "tþi": "テ̲ィ",
-    "tþu": "ト̲ゥ",
-    "tþe": "テ̲",
-    "tþo": "ト̲",
+    "tsa": "ツァ",
+    "tsi": "ツィ",
+    "tsu": "ツ",
+    "tse": "ツェ",
+    "tso": "ツォ",
+    #
+    "tþa": "タ̣",
+    "tþi": "テ̣ィ",
+    "tþu": "ト̣ゥ",
+    "tþe": "テ̣",
+    "tþo": "ト̣",
     #
     "na": "ナ",
     "ni": "ニ",
@@ -153,11 +167,11 @@ katakanaMain = {
     "be": "ベ",
     "bo": "ボ",
     #
-    "pfa": "パ̲",
-    "pfi": "ピ̲",
-    "pfu": "プ̲",
-    "pfe": "ペ̲",
-    "pfo": "ポ̲",
+    "pfa": "パ̣",
+    "pfi": "ピ̣",
+    "pfu": "プ̣",
+    "pfe": "ペ̣",
+    "pfo": "ポ̣",
     #
     "ma": "マ",
     "mi": "ミ",
@@ -165,11 +179,23 @@ katakanaMain = {
     "me": "メ",
     "mo": "モ",
     #
+    "ja": "ヤ",
+    "ji": "イ゚",
+    "ju": "ユ",
+    "je": "エ゚",
+    "jo": "ヨ",
+    #
     "ra": "ラ",
     "ri": "リ",
     "ru": "ル",
     "re": "レ",
     "ro": "ロ",
+    #
+    "wa": "ワ",
+    "wi": "ヰ",
+    "wu": "ウ゚",
+    "we": "ヱ",
+    "wo": "ヲ",
     #
     "la": "ラ゚",
     "li": "リ゚",
@@ -186,16 +212,19 @@ katakanaMain = {
     "k": "ㇰ",
     "g": "ㇰ゙",
     "ŋ": "ㇰ゚",
-    "kx": "ㇰ̲",
+    "kx": "ㇰ̣",
     "t": "ㇳ",
     "d": "ㇳ゙",
-    "tþ": "ㇳ̲",
+    "ts": "ッ",
+    "tþ": "ㇳ̣",
     "n": "ン",
     "b": "ㇷ゙",
     "p": "ㇷ゚",
-    "pf": "ㇷ゚̲",
+    "pf": "ㇷ゚̣",
     "m": "ㇺ",
+    "j": "ィ゚",
     "r": "ㇽ",
+    "w": "ゥ゚",
     "l": "ㇽ゚",
     #
     " ": "・",
@@ -212,23 +241,27 @@ katakanaMain = {
     "~": "〜",
 }
 
-
 data["Katakana"] = gendict(
-    katakanaMain,
-    revmain=False,
-    preproc=katakanaPre,
-    revpreproc=True,
-    demacron=True,
-    capsinsensitive=True,
+    [
+        {"caps_insensitive": True, "data": katakana0},
+        {"reverse": True, "caps_insensitive": True, "data": katakana1},
+        {"caps_insensitive": True, "data": katakana2},
+    ]
 )
 
-
 # Lontara Dict Generator
-lontara = {",": "᨞", ".": "᨟"}
+
+lontara0 = {}
+
+for vowel in ("a", "i", "u", "e", "o", "y", "æ"):
+    lontara0[unicodedata.normalize("NFC", vowel + "̄")] = vowel + vowel
+
+lontara1 = {",": "᨞", ".": "᨟"}
 lontaraConsonants = {
     "b": "ᨅ",
     "d": "ᨉ",
     "g": "ᨁ",
+    "j": "ᨐ",
     "k": "ᨀ",
     "l": "ᨒ",
     "m": "ᨆ",
@@ -236,10 +269,12 @@ lontaraConsonants = {
     "p": "ᨄ",
     "r": "ᨑ",
     "t": "ᨈ",
+    "ts": "ᨌ",
+    "w": "ᨓ",
     "ŋ": "ᨂ",
-    "pf": "ᨓ",
-    "tþ": "ᨔ",
-    "kx": "ᨖ",
+    "pf": "ᨇ",
+    "tþ": "ᨋ",
+    "kx": "ᨃ",
     "": "ᨕ",
 }
 lontaraAttachments = {
@@ -255,11 +290,15 @@ lontaraAttachments = {
 
 for x in lontaraConsonants:
     for y in lontaraAttachments:
-        lontara[x + y] = lontaraConsonants[x] + lontaraAttachments[y]
+        if x != "" or y != "":
+            lontara1[x + y] = lontaraConsonants[x] + lontaraAttachments[y]
 
-del lontara[""]
-
-data["Lontara"] = gendict(lontara, False, demacron=True, capsinsensitive=True)
+data["Lontara"] = gendict(
+    [
+        {"caps_insensitive": True, "data": lontara0},
+        {"caps_insensitive": True, "data": lontara1},
+    ]
+)
 
 out = json.dumps(data, sort_keys=True, indent=4)
 f = open("dict.json", "w")

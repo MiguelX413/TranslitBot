@@ -13,89 +13,52 @@ def postCommon(text):
     return text
 
 
-def convert(text, dictionary, vowels=("a", "i", "u", "e", "o", "æ", "y")):
-    # Decompose and recompose everything in the text
-    text = unicodedata.normalize("NFC", unicodedata.normalize("NFD", text))
-    # Convert double bowels to
-    if dictionary.get("demacron"):
-        for vowel in vowels:
-            text = text.replace(
-                unicodedata.normalize("NFC", vowel + "̄"), (vowel + vowel)
-            )
-            text = text.replace(
-                unicodedata.normalize("NFC", vowel + "̄").upper(),
-                (vowel + vowel).upper(),
-            )
+def convert(text, dictionary):
 
-    if dictionary.get("decomposed"):
-        text = unicodedata.normalize("NFD", text)
+    for subdict in dictionary:
+        data, to_reverse, caps_insensitive = (
+            subdict.get("data", {}),
+            subdict.get("reverse", False),
+            subdict.get("caps_insensitive", False),
+        )
+        sub_length = subdict.get("sub_length", len(max(data, key=len)))
 
-    for step in ("preproc", "main", "postproc"):
-        if dictionary.get(step):
-            if dictionary[step].get("rev") == False:
-                for size in range(
-                    dictionary[step].get("max", len(max(dictionary[step], key=len))),
-                    dictionary[step].get("min", len(min(dictionary[step], key=len)))
-                    - 1,
-                    -1,
-                ):
-                    index = 0
-                    while index <= len(text) - size:
-                        if dictionary.get("capsinsensitive") == False:
-                            text = text.replace(
-                                text[index : index + size],
-                                dictionary[step]["data"].get(
-                                    text[index : index + size],
-                                    text[index : index + size],
-                                ),
-                                1,
-                            )
-                        else:
-                            text = text.replace(
-                                text[index : index + size],
-                                dictionary[step]["data"].get(
-                                    text[index : index + size].lower(),
-                                    text[index : index + size],
-                                ),
-                                1,
-                            )
-                        index = index + 1
+        # Decompose and recompose everything in the text
+        text = unicodedata.normalize("NFC", unicodedata.normalize("NFD", text))
+        if subdict.get("decomposed"):
+            text = unicodedata.normalize("NFD", text)
 
+        index = 0
+        print(sub_length)
+        while index <= len(text) - sub_length:
+
+            if to_reverse:
+                sub_string = text[-(index + sub_length + 1) : -(index + 1)]
             else:
-                for size in range(
-                    dictionary[step].get("max", len(max(dictionary[step], key=len))),
-                    dictionary[step].get("min", len(min(dictionary[step], key=len)))
-                    - 1,
-                    -1,
-                ):
-                    index = 0
-                    while len(text) - index - size >= 0:
-                        # print(text)
-                        # print(len(text))
-                        # print(text[index : index + size])
-                        if dictionary.get("capsinsensitive") == False:
-                            text = text[::-1].replace(
-                                text[len(text) - index - size : len(text) - index][
-                                    ::-1
-                                ],
-                                dictionary[step]["data"].get(
-                                    text[len(text) - index - size : len(text) - index],
-                                    text[len(text) - index - size : len(text) - index],
-                                )[::-1],
-                                1,
-                            )[::-1]
-                        else:
-                            text = text[::-1].replace(
-                                text[len(text) - index - size : len(text) - index][
-                                    ::-1
-                                ],
-                                dictionary[step]["data"].get(
-                                    text[
-                                        len(text) - index - size : len(text) - index
-                                    ].lower(),
-                                    text[len(text) - index - size : len(text) - index],
-                                )[::-1],
-                                1,
-                            )[::-1]
-                        index = index + 1
+                sub_string = text[index : index + sub_length]
+            print(sub_string)
+            key = sub_string
+
+            if caps_insensitive:
+                key = key.lower()
+
+            if key in data:
+                input_text = text
+                replace_from = sub_string
+
+                replace_to = data.get(key)
+
+                if to_reverse:
+                    input_text = input_text[::-1]
+                    replace_from = replace_from[::-1]
+                    replace_to = replace_to[::-1]
+
+                text = input_text.replace(replace_from, replace_to, 1)
+
+                if to_reverse:
+                    text = text[::-1]
+            print(text)
+            breakpoint()
+            index += 1
+
     return unicodedata.normalize("NFC", text)

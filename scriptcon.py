@@ -58,7 +58,6 @@ def convert(text, dictionary):
                 if to_reverse:
                     text = text[::-1]
             print(text)
-            breakpoint()
             index += 1
 
     return unicodedata.normalize("NFC", text)

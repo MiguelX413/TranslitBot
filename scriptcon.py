@@ -33,7 +33,7 @@ def convert(text, dictionary):
         while index <= len(text) - sub_length:
 
             if to_reverse:
-                sub_string = text[-(index + sub_length + 1) : -(index + 1)]
+                sub_string = text[len(text) - index - sub_length : len(text) - index]
             else:
                 sub_string = text[index : index + sub_length]
             print(sub_string)

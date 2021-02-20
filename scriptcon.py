@@ -29,14 +29,12 @@ def convert(text, dictionary):
             text = unicodedata.normalize("NFD", text)
 
         index = 0
-        print(sub_length)
         while index <= len(text) - sub_length:
 
             if to_reverse:
                 sub_string = text[len(text) - index - sub_length : len(text) - index]
             else:
                 sub_string = text[index : index + sub_length]
-            print(sub_string)
             key = sub_string
 
             if caps_insensitive:
@@ -57,7 +55,6 @@ def convert(text, dictionary):
 
                 if to_reverse:
                     text = text[::-1]
-            print(text)
             index += 1
 
     return unicodedata.normalize("NFC", text)

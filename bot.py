@@ -29,24 +29,40 @@ if __name__ == "__main__":
     def inlinequery(update: Update, context: CallbackContext) -> None:
         """Handle the inline query."""
         query = update.inline_query.query
-        cyrillicResult = scriptcon.convert(query, dictdata["Cyrillic"])
-        katakanaResult = scriptcon.convert(query, dictdata["Katakana"])
-        lontaraResult = scriptcon.convert(query, dictdata["Lontara"])
+        cyrillicResult = ""
+        katakanaResult = ""
+        lontaraResult = ""
+        for x in scriptcon.url_separate(query):
+            if scriptcon.url_regex.match(x) is None:
+                cyrillicResult += scriptcon.convert(x, dictdata["Cyrillic"])
+                katakanaResult += scriptcon.convert(x, dictdata["Katakana"])
+                lontaraResult += scriptcon.convert(x, dictdata["Lontara"])
+            else:
+                cyrillicResult += x
+                katakanaResult += x
+                lontaraResult += x
+        latinResult = query
         results = [
             InlineQueryResultArticle(
                 id=1,
+                title="Latin",
+                description=latinResult,
+                input_message_content=InputTextMessageContent(latinResult),
+            ),
+            InlineQueryResultArticle(
+                id=2,
                 title="Cyrillic",
                 description=cyrillicResult,
                 input_message_content=InputTextMessageContent(cyrillicResult),
             ),
             InlineQueryResultArticle(
-                id=2,
+                id=3,
                 title="Katakana",
                 description=katakanaResult,
                 input_message_content=InputTextMessageContent(katakanaResult),
             ),
             InlineQueryResultArticle(
-                id=3,
+                id=4,
                 title="Lontara",
                 description=lontaraResult,
                 input_message_content=InputTextMessageContent(lontaraResult),

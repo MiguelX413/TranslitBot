@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="KxelBot",
     version="",
-    py_modules=["logging", "os", "unicodedata"],
+    py_modules=["logging", "os", "unicodedata", "re"],
     packages=[""],
     url="https://github.com/MiguelX413/KxelBot",
     license="AGPL 3.0",

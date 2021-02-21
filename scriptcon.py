@@ -1,4 +1,9 @@
 import unicodedata
+import re
+
+url_regex = re.compile(
+    r"((about|ftp(s)?|filesystem|git|ssh|http(s)?):(\/\/)?)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)\s?"
+)
 
 
 def preCommon(text):
@@ -14,7 +19,6 @@ def postCommon(text):
 
 
 def convert(text, dictionary):
-
     for subdict in dictionary:
         data, to_reverse, caps_insensitive = (
             subdict.get("data", {}),
@@ -58,3 +62,19 @@ def convert(text, dictionary):
             index += 1
 
     return unicodedata.normalize("NFC", text)
+
+
+def url_separate(text):
+    working_text = text
+    results = []
+    if url_regex.search(text) is not None:
+        while url_regex.search(working_text) is not None:
+            partitions = working_text.partition(url_regex.search(working_text).group(0))
+            results.append(partitions[0])
+            results.append(partitions[1])
+            working_text = partitions[2]
+        else:
+            results.append(working_text)
+        return results
+    else:
+        return [text]

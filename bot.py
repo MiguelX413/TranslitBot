@@ -1,6 +1,7 @@
 import logging
 import os
 import scriptcon
+import re
 from telegram import (
     InlineQueryResultArticle,
     ParseMode,
@@ -12,6 +13,27 @@ from telegram.utils.helpers import escape_markdown
 import json
 
 if __name__ == "__main__":
+    url_regex = re.compile(
+        r"\s?(((about|ftp(s)?|filesystem|git|ssh|http(s)?):(\/\/)?)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)\s?)"
+    )
+
+    def url_separate(text):
+        working_text = text
+        results = []
+        if url_regex.search(text) is not None:
+            while url_regex.search(working_text) is not None:
+                partitions = working_text.partition(
+                    url_regex.search(working_text).group(0)
+                )
+                results.append(partitions[0])
+                results.append(partitions[1])
+                working_text = partitions[2]
+            else:
+                results.append(working_text)
+            return results
+        else:
+            return [text]
+
     token = os.environ["TG_TOKEN"]
     try:
         with open("dict.json", "r") as f:
@@ -32,8 +54,8 @@ if __name__ == "__main__":
         cyrillicResult = ""
         katakanaResult = ""
         lontaraResult = ""
-        for x in scriptcon.url_separate(query):
-            if scriptcon.url_regex.match(x) is None:
+        for x in url_separate(query):
+            if url_regex.match(x) is None:
                 cyrillicResult += scriptcon.convert(x, dictdata["Cyrillic"])
                 katakanaResult += scriptcon.convert(x, dictdata["Katakana"])
                 lontaraResult += scriptcon.convert(x, dictdata["Lontara"])
@@ -45,27 +67,27 @@ if __name__ == "__main__":
         results = [
             InlineQueryResultArticle(
                 id=1,
-                title="Latin",
-                description=latinResult,
-                input_message_content=InputTextMessageContent(latinResult),
-            ),
-            InlineQueryResultArticle(
-                id=2,
                 title="Cyrillic",
                 description=cyrillicResult,
                 input_message_content=InputTextMessageContent(cyrillicResult),
             ),
             InlineQueryResultArticle(
-                id=3,
+                id=2,
                 title="Katakana",
                 description=katakanaResult,
                 input_message_content=InputTextMessageContent(katakanaResult),
             ),
             InlineQueryResultArticle(
-                id=4,
+                id=3,
                 title="Lontara",
                 description=lontaraResult,
                 input_message_content=InputTextMessageContent(lontaraResult),
+            ),
+            InlineQueryResultArticle(
+                id=4,
+                title="Latin",
+                description=latinResult,
+                input_message_content=InputTextMessageContent(latinResult),
             ),
         ]
 

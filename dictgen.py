@@ -20,6 +20,7 @@ def gendict(
             for item in data:
                 if len(item) == sub_length:
                     tempdict[item] = data[item]
+
             dict.append(
                 {
                     "sub_length": sub_length,
@@ -271,17 +272,17 @@ katakana2 = {
     "z": "ㇲ゙",
     "t": "ㇳ",
     "d": "ㇳ゙",
-    "ts": "ッ゚",
     "tþ": "ㇳ̣",
+    "ts": "ッ゚",
     "n": "ン",
-    "b": "ㇷ゙",
     "p": "ㇷ゚",
+    "b": "ㇷ゙",
     "pf": "ㇷ゚̣",
     "m": "ㇺ",
     "j": "ィ゚",
     "r": "ㇽ",
-    "w": "ゥ゚",
     "l": "ㇽ゚",
+    "w": "ゥ゚",
     #
     " ": "・",
     ".": "。",

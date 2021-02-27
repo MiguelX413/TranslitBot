@@ -1,4 +1,5 @@
 import unicodedata
+import re
 
 
 def preCommon(text):
@@ -15,45 +16,58 @@ def postCommon(text):
 
 def convert(text, dictionary):
     for subdict in dictionary:
-        data, to_reverse, caps_insensitive = (
-            subdict.get("data", {}),
-            subdict.get("reverse", False),
-            subdict.get("caps_insensitive", False),
-        )
-        sub_length = subdict.get("sub_length", len(max(data, key=len)))
+        if subdict.get("type", "dict") == "dict":
+            data, aliases, to_reverse, caps_insensitive = (
+                subdict.get("data", {}),
+                subdict.get("aliases", {}),
+                subdict.get("reverse", False),
+                subdict.get("caps_insensitive", False),
+            )
+            sub_length = subdict.get("sub_length", len(max(data, key=len)))
+            # Decompose and recompose everything in the text
+            text = unicodedata.normalize("NFC", unicodedata.normalize("NFD", text))
+            if subdict.get("decomposed"):
+                text = unicodedata.normalize("NFD", text)
 
-        # Decompose and recompose everything in the text
-        text = unicodedata.normalize("NFC", unicodedata.normalize("NFD", text))
-        if subdict.get("decomposed"):
-            text = unicodedata.normalize("NFD", text)
-
-        index = 0
-        while index <= len(text) - sub_length:
-
-            if to_reverse:
-                sub_string = text[len(text) - index - sub_length : len(text) - index]
-            else:
-                sub_string = text[index : index + sub_length]
-            key = sub_string
-
-            if caps_insensitive:
-                key = key.lower()
-
-            if key in data:
-                input_text = text
-                replace_from = sub_string
-
-                replace_to = data.get(key)
+            index = 0
+            while index <= len(text) - sub_length:
 
                 if to_reverse:
-                    input_text = input_text[::-1]
-                    replace_from = replace_from[::-1]
-                    replace_to = replace_to[::-1]
+                    sub_string = text[
+                        len(text) - index - sub_length : len(text) - index
+                    ]
+                else:
+                    sub_string = text[index : index + sub_length]
+                key = sub_string
 
-                text = input_text.replace(replace_from, replace_to, 1)
+                if caps_insensitive:
+                    key = key.lower()
 
-                if to_reverse:
-                    text = text[::-1]
-            index += 1
+                if key in data or key in aliases:
+                    input_text = text
+                    replace_from = sub_string
+
+                    replace_to = data.get(key, aliases.get(key))
+
+                    if to_reverse:
+                        input_text = input_text[::-1]
+                        replace_from = replace_from[::-1]
+                        replace_to = replace_to[::-1]
+
+                    text = input_text.replace(replace_from, replace_to, 1)
+
+                    if to_reverse:
+                        text = text[::-1]
+                index += 1
+        elif subdict.get("type", "dict") == "regex":
+            params = subdict.get("params", None)
+            if params is not None:
+                params = list(params)
+                working_text = unicodedata.normalize("NFC", text)
+
+                if subdict.get("decomposed"):
+                    working_text = unicodedata.normalize("NFD", working_text)
+                params[2] = working_text
+                text = re.sub(*params)
 
     return unicodedata.normalize("NFC", text)

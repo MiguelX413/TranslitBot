@@ -1,35 +1,67 @@
 import json
 import unicodedata
+import re
 
 
 def gendict(
     subdicts=[
-        {"reverse": False, "decomposed": False, "caps_insensitive": False, "data": {}}
+        {
+            "type": "dict",
+            "reverse": False,
+            "decomposed": False,
+            "caps_insensitive": False,
+            "data": {},
+        }
     ],
 ):
     dict = []
 
     for x in subdicts:
-        data = x.get("data")
-        for sub_length in range(
-            len(max(data, key=len)),
-            len(min(data, key=len)) - 1,
-            -1,
-        ):
-            tempdict = {}
-            for item in data:
-                if len(item) == sub_length:
-                    tempdict[item] = data[item]
+        if x.get("type", "dict") == "dict":
+            data = x.get("data")
+            primary_dict = {}
+            aliases_dict = {}
 
+            for entry in data:
+                if data[entry] not in primary_dict.values():
+                    primary_dict[entry] = data[entry]
+                else:
+                    aliases_dict[entry] = data[entry]
+
+            for sub_length in range(
+                len(max(data, key=len)),
+                len(min(data, key=len)) - 1,
+                -1,
+            ):
+                temp_dict = {}
+                aliases_temp_dict = {}
+                for item in primary_dict:
+                    if len(item) == sub_length:
+                        temp_dict[item] = primary_dict[item]
+                for item in aliases_dict:
+                    if len(item) == sub_length:
+                        aliases_temp_dict[item] = aliases_dict[item]
+                dict.append(
+                    {
+                        "type": "dict",
+                        "sub_length": sub_length,
+                        "reverse": x.get("reverse", False),
+                        "decomposed": x.get("decomposed", False),
+                        "caps_insensitive": x.get("caps_insensitive", False),
+                        "data": temp_dict,
+                        "aliases": aliases_temp_dict,
+                    }
+                )
+        elif x.get("type", "dict") == "regex":
             dict.append(
                 {
-                    "sub_length": sub_length,
-                    "reverse": x.get("reverse", False),
+                    "type": "regex",
                     "decomposed": x.get("decomposed", False),
-                    "caps_insensitive": x.get("caps_insensitive", False),
-                    "data": tempdict,
+                    "params": x.get("params"),
+                    "undo": x.get("undo", None),
                 }
             )
+
     return dict
 
 
@@ -302,7 +334,33 @@ data["Katakana"] = gendict(
     [
         {"caps_insensitive": True, "data": katakana0},
         {"reverse": True, "caps_insensitive": True, "data": katakana1},
+        {
+            "type": "regex",
+            "params": (
+                r"(?i)(a|i|u|e|o|y|æ)((ー){0,})'\1{1}",
+                r"\1\2\1",
+                "text",
+            ),
+            "undo": (
+                r"(?i)(a|i|u|e|o|y|æ)((ー){0,})\1{1}",
+                r"\1\2'\1",
+                "text",
+            ),
+        },
         {"caps_insensitive": True, "data": katakana2},
+        {
+            "type": "regex",
+            "params": (
+                r"(ㇰ|ㇰ゙|ㇰ゚|ㇰ̣|ㇲ|ㇲ゙|ㇳ|ㇳ゙|ㇳ̣|ッ゚|ン|ㇴ|ㇷ゚|ㇷ゙|ㇷ゚̣|ㇺ|ィ゚|ㇽ|ㇽ゚|ゥ゚)'(アｪ|イｩ|ア|イ|ウ|エ|オ)",
+                r"\1\2",
+                "text",
+            ),
+            "undo": (
+                r"(ㇰ|ㇰ゙|ㇰ゚|ㇰ̣|ㇲ|ㇲ゙|ㇳ|ㇳ゙|ㇳ̣|ッ゚|ン|ㇴ|ㇷ゚|ㇷ゙|ㇷ゚̣|ㇺ|ィ゚|ㇽ|ㇽ゚|ゥ゚)(アｪ|イｩ|ア|イ|ウ|エ|オ)",
+                r"\1'\2",
+                "text",
+            ),
+        },
     ]
 )
 
@@ -357,6 +415,7 @@ data["Lontara"] = gendict(
         {"caps_insensitive": True, "data": lontara1},
     ]
 )
+
 
 out = json.dumps(data, sort_keys=True, indent=4)
 f = open("dict.json", "w")

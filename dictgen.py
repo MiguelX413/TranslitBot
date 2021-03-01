@@ -513,6 +513,7 @@ data["Lontara"] = gendict(
                 r"\1'\2",
                 "text",
             ),
+        },
         {
             "type": "regex",
             "params": (

@@ -23,7 +23,13 @@ def convert(text, dictionary):
                 subdict.get("reverse", False),
                 subdict.get("caps_insensitive", False),
             )
-            sub_length = subdict.get("sub_length", len(max(data, key=len)))
+            if len(data) > 0:
+                sub_length = subdict.get("sub_length", len(max(data, key=len)))
+            elif len(aliases) > 0:
+                sub_length = subdict.get("sub_length", len(max(aliases, key=len)))
+            else:
+                sub_length = 1
+
             # Decompose and recompose everything in the text
             text = unicodedata.normalize("NFC", unicodedata.normalize("NFD", text))
             if subdict.get("decomposed"):

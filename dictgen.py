@@ -67,26 +67,31 @@ def gendict(
 
 data = {}
 cyrillic = {
+    "pf": "ԥ",
     "Pf": "Ԥ",
     "pF": "ԥ",
     "PF": "Ԥ",
-    "pf": "ԥ",
     #
+    "ts": "ц",
     "Ts": "Ц",
     "tS": "ц",
     "TS": "Ц",
-    "ts": "ц",
     #
+    "tþ": "ҭ",
     "Tþ": "Ҭ",
     "tÞ": "ҭ",
     "TÞ": "Ҭ",
-    "tþ": "ҭ",
     #
+    "kx": "қ",
     "Kx": "Қ",
     "kX": "қ",
     "KX": "Қ",
-    "kx": "қ",
 }
+
+for a in ("þ", "th"), ("Þ", "Th"), ("þ", "tH"), ("Þ", "TH"):
+    for b in list(cyrillic):
+        if a[0] in b:
+            cyrillic[b.replace(a[0], a[1])] = cyrillic[b]
 
 cyrillicpairs = [
     ("a", "а"),
@@ -117,9 +122,27 @@ for x in cyrillicpairs:
     cyrillic[x[0].lower()] = x[1].lower()
     cyrillic[x[0].upper()] = x[1].upper()
 
+cyrillic["ng"] = "ҥ"
+cyrillic["NG"] = "Ҥ"
+cyrillic["nG"] = "ҥ"
+cyrillic["Ng"] = "Ҥ"
+
 data["Cyrillic"] = gendict(
     [
         {"decomposed": True, "data": cyrillic},
+        {
+            "type": "regex",
+            "params": (
+                r"(?i)(н)'(г)",
+                r"\1\2",
+                "text",
+            ),
+            "undo": (
+                r"(?i)(н)(г)",
+                r"\1'\2",
+                "text",
+            ),
+        },
     ]
 )
 
@@ -320,15 +343,23 @@ katakana2 = {
     ".": "。",
     ",": "、",
     "!": "！",
+    ": ": "：",
+    ":": "：",
     ". ": "。",
     ", ": "、",
     "! ": "！",
-    "-": "―",
+    "-": "゠",
+    "=": "＝",
     "+": "＋",
     "(": "（",
     ")": "）",
     "~": "〜",
 }
+
+for a in ("tþ", "tth"), ("ŋ", "ng"):
+    for b in list(katakana2):
+        if a[0] in b:
+            katakana2[b.replace(a[0], a[1])] = katakana2[b]
 
 data["Katakana"] = gendict(
     [
@@ -357,6 +388,19 @@ data["Katakana"] = gendict(
             ),
             "undo": (
                 r"(ㇰ|ㇰ゙|ㇰ゚|ㇰ̣|ㇲ|ㇲ゙|ㇳ|ㇳ゙|ㇳ̣|ッ゚|ン|ㇴ|ㇷ゚|ㇷ゙|ㇷ゚̣|ㇺ|ィ゚|ㇽ|ㇽ゚|ゥ゚)(アｪ|イｩ|ア|イ|ウ|エ|オ)",
+                r"\1'\2",
+                "text",
+            ),
+        },
+        {
+            "type": "regex",
+            "params": (
+                r"(ン|ㇴ)'(ガｪ|ギｩ|ガ|ギ|グ|ゲ|ゴ|ㇰ゙)",
+                r"\1\2",
+                "text",
+            ),
+            "undo": (
+                r"(ン|ㇴ)(ガｪ|ギｩ|ガ|ギ|グ|ゲ|ゴ|ㇰ゙)",
                 r"\1'\2",
                 "text",
             ),
@@ -409,10 +453,41 @@ for x in lontaraConsonants:
         if x != "" or y != "":
             lontara1[x + y] = lontaraConsonants[x] + lontaraAttachments[y]
 
+for a in ("tþ", "tth"), ("ŋ", "ng"):
+    for b in list(lontara1):
+        if a[0] in b:
+            lontara1[b.replace(a[0], a[1])] = lontara1[b]
+
 data["Lontara"] = gendict(
     [
         {"caps_insensitive": True, "data": lontara0},
         {"caps_insensitive": True, "data": lontara1},
+        {
+            "type": "regex",
+            "params": (
+                r"(ᨀ̲|ᨁ̲|ᨂ̲|ᨃ̲|ᨄ̲|ᨅ̲|ᨆ̲|ᨇ̲|ᨈ̲|ᨉ̲|ᨊ̲|ᨋ̲|ᨌ̲|ᨐ̲|ᨑ̲|ᨒ̲|ᨓ̲|ᨔ̲)'(ᨕᨗ|ᨕᨘ|ᨕᨙ|ᨕᨚ|ᨕᨛ|ᨕ︠|ᨕ)",
+                r"\1\2",
+                "text",
+            ),
+            "undo": (
+                r"(ᨀ̲|ᨁ̲|ᨂ̲|ᨃ̲|ᨄ̲|ᨅ̲|ᨆ̲|ᨇ̲|ᨈ̲|ᨉ̲|ᨊ̲|ᨋ̲|ᨌ̲|ᨐ̲|ᨑ̲|ᨒ̲|ᨓ̲|ᨔ̲)(ᨕᨗ|ᨕᨘ|ᨕᨙ|ᨕᨚ|ᨕᨛ|ᨕ︠|ᨕ)",
+                r"\1'\2",
+                "text",
+            ),
+        },
+        {
+            "type": "regex",
+            "params": (
+                r"(ᨊ̲)'(ᨁ̲|ᨁᨗ|ᨁᨘ|ᨁᨙ|ᨁᨚ|ᨁᨛ|ᨁ︠|ᨁ)",
+                r"\1\2",
+                "text",
+            ),
+            "undo": (
+                r"(ᨊ̲)(ᨁ̲|ᨁᨗ|ᨁᨘ|ᨁᨙ|ᨁᨚ|ᨁᨛ|ᨁ︠|ᨁ)",
+                r"\1'\2",
+                "text",
+            ),
+        },
     ]
 )
 

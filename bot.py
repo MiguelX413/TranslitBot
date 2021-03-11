@@ -54,16 +54,23 @@ if __name__ == "__main__":
         cyrillicResult = ""
         katakanaResult = ""
         lontaraResult = ""
+        latinResult = ""
         for x in url_separate(query):
             if url_regex.match(x) is None:
-                cyrillicResult += scriptcon.convert(x, dictdata["Cyrillic"])
-                katakanaResult += scriptcon.convert(x, dictdata["Katakana"])
-                lontaraResult += scriptcon.convert(x, dictdata["Lontara"])
+                latinConversion = scriptcon.convert(x, dictdata["Latin"])
+                latinResult += latinConversion
+                cyrillicResult += scriptcon.convert(
+                    latinConversion, dictdata["Cyrillic"]
+                )
+                katakanaResult += scriptcon.convert(
+                    latinConversion, dictdata["Katakana"]
+                )
+                lontaraResult += scriptcon.convert(latinConversion, dictdata["Lontara"])
             else:
+                latinResult += x
                 cyrillicResult += x
                 katakanaResult += x
                 lontaraResult += x
-        latinResult = query
         results = [
             InlineQueryResultArticle(
                 id=1,

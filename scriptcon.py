@@ -2,18 +2,6 @@ import unicodedata
 import re
 
 
-def preCommon(text):
-    # 	text = unicodedata.normalize('NFC', unicodedata.normalize('NFD', text))
-    text = text.replace("ng", "ŋ")
-    return text
-
-
-def postCommon(text):
-    text = unicodedata.normalize("NFC", unicodedata.normalize("NFD", text))
-    text = text.replace("\\", "")
-    return text
-
-
 def convert(text, dictionary):
     for subdict in dictionary:
         if subdict.get("type", "dict") == "dict":

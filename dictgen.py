@@ -66,6 +66,23 @@ def gendict(
 
 
 data = {}
+
+latin0 = {
+    "\\AE": "Æ",
+    "\\ae": "æ",
+    "\\NG": "Ŋ",
+    "\\ng": "ŋ",
+    "\\TH": "Þ",
+    "\\th": "þ",
+}
+
+latin1 = {}
+for vowel in ("a", "i", "u", "e", "o", "æ", "y"):
+    latin1["\=" + vowel] = unicodedata.normalize("NFC", vowel + "̄")
+    latin1["\=" + vowel.upper()] = unicodedata.normalize("NFC", vowel.upper() + "̄")
+
+data["Latin"] = gendict([{"data": latin0}, {"data": latin1}])
+
 cyrillic = {
     "pf": "ԥ",
     "Pf": "Ԥ",

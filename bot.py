@@ -76,25 +76,25 @@ if __name__ == "__main__":
                 id=1,
                 title="Cyrillic",
                 description=cyrillicResult,
-                input_message_content=InputTextMessageContent(cyrillicResult),
+                input_message_content=InputTextMessageContent(cyrillicResult, parse_mode="MarkdownV2"),
             ),
             InlineQueryResultArticle(
                 id=2,
                 title="Katakana",
                 description=katakanaResult,
-                input_message_content=InputTextMessageContent(katakanaResult),
+                input_message_content=InputTextMessageContent(katakanaResult, parse_mode="MarkdownV2"),
             ),
             InlineQueryResultArticle(
                 id=3,
                 title="Lontara",
                 description=lontaraResult,
-                input_message_content=InputTextMessageContent(lontaraResult),
+                input_message_content=InputTextMessageContent(lontaraResult, parse_mode="MarkdownV2"),
             ),
             InlineQueryResultArticle(
                 id=4,
                 title="Latin",
                 description=latinResult,
-                input_message_content=InputTextMessageContent(latinResult),
+                input_message_content=InputTextMessageContent(latinResult, parse_mode="MarkdownV2"),
             ),
         ]
 

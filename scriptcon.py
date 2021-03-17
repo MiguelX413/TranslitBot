@@ -56,12 +56,13 @@ def convert(text, dictionary):
         elif subdict.get("type", "dict") == "regex":
             params = subdict.get("params", None)
             if params is not None:
-                params = list(params)
                 working_text = unicodedata.normalize("NFC", text)
 
                 if subdict.get("decomposed"):
                     working_text = unicodedata.normalize("NFD", working_text)
-                params[2] = working_text
-                text = re.sub(*params)
-
+                while re.search(params["pattern"], working_text) is not None:
+                    working_text = re.sub(string=working_text, **params)
+                text = working_text
+        else:
+            print('Unknown subdict type "' + str(subdict.get("type", "")) + '"')
     return unicodedata.normalize("NFC", text)

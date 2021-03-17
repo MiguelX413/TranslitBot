@@ -1,6 +1,5 @@
 import json
 import unicodedata
-import re
 
 
 def gendict(
@@ -534,6 +533,5 @@ data["Lontara"] = gendict(
 
 
 out = json.dumps(data, indent=4)
-f = open("dict.json", "w")
-f.write(out)
-f.close()
+with open("dict.json", "w") as f:
+    f.write(out)

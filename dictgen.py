@@ -21,10 +21,12 @@ def gendict(
             data = x.get("data")
             primary_dict = {}
             aliases_dict = {}
+            primary_values = set()
 
             for entry in data:
-                if data[entry] not in primary_dict.values():
+                if data[entry] not in primary_values:
                     primary_dict[entry] = data[entry]
+                    primary_values.add(data[entry])
                 else:
                     aliases_dict[entry] = data[entry]
 

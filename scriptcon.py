@@ -60,7 +60,10 @@ def convert(text, dictionary):
 
                 if subdict.get("decomposed"):
                     working_text = unicodedata.normalize("NFD", working_text)
-                while re.search(params["pattern"], working_text) is not None:
+                if subdict.get("repeat", False):
+                    while re.search(params["pattern"], working_text) is not None:
+                        working_text = re.sub(string=working_text, **params)
+                else:
                     working_text = re.sub(string=working_text, **params)
                 text = working_text
         else:

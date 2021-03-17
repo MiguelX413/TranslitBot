@@ -59,6 +59,7 @@ def gendict(
                     "decomposed": x.get("decomposed", False),
                     "params": x.get("params"),
                     "undo": x.get("undo", None),
+                    "repeat": x.get("repeat", True),
                 }
             )
 

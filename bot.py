@@ -9,13 +9,42 @@ if __name__ == "__main__":
         InputTextMessageContent,
         Update,
     )
-    from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackContext
+    from telegram.ext import (
+        Updater,
+        InlineQueryHandler,
+        CommandHandler,
+        CallbackContext,
+    )
     from telegram.utils.helpers import escape_markdown
     import json
 
     import argparse
+    import sys
+
     parser = argparse.ArgumentParser(description="Runs TG bot")
-    parser.add_argument("-r", "--rich", action=argparse.BooleanOptionalAction, default=True, help="Enables rich output")
+    if (sys.version_info[0] >= 3) and (sys.version_info[1] >= 9):
+        parser.add_argument(
+            "-r",
+            "--rich",
+            action=argparse.BooleanOptionalAction,
+            default=True,
+            help="Enables rich output",
+        )
+    else:
+        parser.add_argument(
+            "-r",
+            "--rich",
+            action="store_true",
+            default=True,
+            help="Enables rich output",
+        )
+        parser.add_argument(
+            "--no-rich",
+            action="store_false",
+            dest="rich",
+            default=True,
+            help="Disables rich output",
+        )
     do_rich = parser.parse_args().rich
 
     if do_rich:
@@ -118,7 +147,7 @@ if __name__ == "__main__":
         "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     }
     if do_rich:
-        logging_args["handlers"]=[RichHandler(rich_tracebacks=True)]
+        logging_args["handlers"] = [RichHandler(rich_tracebacks=True)]
     logging.basicConfig(**logging_args)
 
     updater = Updater(token, use_context=True)

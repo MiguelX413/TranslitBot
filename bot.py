@@ -14,8 +14,8 @@ if __name__ == "__main__":
     import json
 
     import argparse
-    parser = argparse.ArgumentParser(description="Generate dictionary data")
-    parser.add_argument("-r", "--rich", action=argparse.BooleanOptionalAction, default=True)
+    parser = argparse.ArgumentParser(description="Runs TG bot")
+    parser.add_argument("-r", "--rich", action=argparse.BooleanOptionalAction, default=True, help="Enables rich output")
     do_rich = parser.parse_args().rich
 
     if do_rich:

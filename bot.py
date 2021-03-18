@@ -1,18 +1,31 @@
-import logging
-import os
-import scriptcon
-import re
-from telegram import (
-    InlineQueryResultArticle,
-    ParseMode,
-    InputTextMessageContent,
-    Update,
-)
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackContext
-from telegram.utils.helpers import escape_markdown
-import json
-
 if __name__ == "__main__":
+    import logging
+    import os
+    import scriptcon
+    import re
+    from telegram import (
+        InlineQueryResultArticle,
+        ParseMode,
+        InputTextMessageContent,
+        Update,
+    )
+    from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackContext
+    from telegram.utils.helpers import escape_markdown
+    import json
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate dictionary data")
+    parser.add_argument("-r", "--rich", action=argparse.BooleanOptionalAction, default=True)
+    do_rich = parser.parse_args().rich
+
+    if do_rich:
+        try:
+            import rich
+            from rich.progress import track, Progress
+            from rich.logging import RichHandler
+        except ModuleNotFoundError:
+            do_rich = False
+
     url_regex = re.compile(
         r"\s?(((about|ftp(s)?|filesystem|git|ssh|http(s)?):(\/\/)?)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)\s?)"
     )
@@ -100,10 +113,13 @@ if __name__ == "__main__":
 
         update.inline_query.answer(results, cache_time=30)
 
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
+    logging_args = {
+        "level": logging.DEBUG,
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    }
+    if do_rich:
+        logging_args["handlers"]=[RichHandler(rich_tracebacks=True)]
+    logging.basicConfig(**logging_args)
 
     updater = Updater(token, use_context=True)
     dispatcher = updater.dispatcher

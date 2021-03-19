@@ -42,7 +42,6 @@ if __name__ == "__main__":
             "--no-rich",
             action="store_false",
             dest="rich",
-            default=True,
             help="Disables rich output",
         )
     do_rich = parser.parse_args().rich

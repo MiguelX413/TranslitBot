@@ -118,21 +118,21 @@ def convert(text, dictionary):
 
 
 def cyrillic(update: Update, _: CallbackContext) -> None:
-    if update.message.reply_to_message.text is not None:
+    if update.message.reply_to_message is not None:
         update.message.reply_text(
             convert(update.message.reply_to_message.text, dictdata["Cyrillic"])
         )
 
 
 def katakana(update: Update, _: CallbackContext) -> None:
-    if update.message.reply_to_message.text is not None:
+    if update.message.reply_to_message is not None:
         update.message.reply_text(
             convert(update.message.reply_to_message.text, dictdata["Katakana"])
         )
 
 
 def lontara(update: Update, _: CallbackContext) -> None:
-    if update.message.reply_to_message.text is not None:
+    if update.message.reply_to_message is not None:
         update.message.reply_text(
             convert(update.message.reply_to_message.text, dictdata["Lontara"])
         )

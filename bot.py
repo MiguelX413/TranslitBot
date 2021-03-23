@@ -119,7 +119,7 @@ def url_separate(text):
 
 
 def start(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text("Kāla!")
+    update.message.reply_text("Ка̄ла!\nカーラ゚！\nᨀᨕᨒ!")
 
 
 def convert(text, dictionary):

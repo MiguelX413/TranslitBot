@@ -44,35 +44,20 @@ def main(do_rich=True):
                     else:
                         aliases_dict[entry] = data[entry]
 
-                for sub_length in conditional_track(
-                    sorted(
-                        set(
-                            len(point)
-                            for point in conditional_track(data, text="Calculating lengths")
+                dict.append(
+                    {
+                        "type": "dict",
+                        "sub_lengths": sorted(
+                            set(len(point) for point in data),
+                            reverse=True,
                         ),
-                        reverse=True,
-                    ),
-                    text="Splitting data by length",
-                ):
-                    temp_dict = {}
-                    aliases_temp_dict = {}
-                    for item in primary_dict:
-                        if len(item) == sub_length:
-                            temp_dict[item] = primary_dict[item]
-                    for item in aliases_dict:
-                        if len(item) == sub_length:
-                            aliases_temp_dict[item] = aliases_dict[item]
-                    dict.append(
-                        {
-                            "type": "dict",
-                            "sub_length": sub_length,
-                            "reverse": x.get("reverse", False),
-                            "decomposed": x.get("decomposed", False),
-                            "caps_insensitive": x.get("caps_insensitive", False),
-                            "data": temp_dict,
-                            "aliases": aliases_temp_dict,
-                        }
-                    )
+                        "reverse": x.get("reverse", False),
+                        "decomposed": x.get("decomposed", False),
+                        "caps_insensitive": x.get("caps_insensitive", False),
+                        "data": primary_dict,
+                        "aliases": aliases_dict,
+                    }
+                )
             elif x.get("type", "dict") == "regex":
                 dict.append(
                     {

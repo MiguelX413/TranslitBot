@@ -101,7 +101,7 @@ def url_separate(text):
 
 
 def start(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text("Hello!")
+    update.message.reply_text("Kāla!")
 
 
 def convert(text, dictionary):

@@ -102,7 +102,7 @@ except FileNotFoundError:
         dictdata = json.loads(f.read())
 
 
-def url_separate(text):
+def url_separate(text) -> tuple:
     working_text = text
     results = []
     if url_regex.search(text) is not None:
@@ -113,16 +113,16 @@ def url_separate(text):
             working_text = partitions[2]
         else:
             results.append(working_text)
-        return results
+        return tuple(results)
     else:
-        return [text]
+        return tuple([text])
 
 
 def start(update: Update, _: CallbackContext) -> None:
     update.message.reply_text("Ка̄ла!\nカーラ゚！\nᨀᨕᨒ!")
 
 
-def convert(text, dictionary):
+def convert(text, dictionary) -> str:
     result = ""
     for x in url_separate(text):
         if url_regex.match(x) is None:
@@ -135,25 +135,18 @@ def convert(text, dictionary):
     return result
 
 
-def cyrillic(update: Update, _: CallbackContext) -> None:
-    if update.message.reply_to_message is not None:
-        update.message.reply_text(
-            convert(update.message.reply_to_message.text if update.message.reply_to_message.text is not None else update.message.reply_to_message.caption, dictdata["Cyrillic"])
-        )
+def genfunc(dictionary):
+    def function(update: Update, _: CallbackContext) -> None:
+        if update.message.reply_to_message is not None:
+            if update.message.reply_to_message.text is not None:
+                text = update.message.reply_to_message.text
+            elif update.message.reply_to_message.caption is not None:
+                text = update.message.reply_to_message.caption
+            else:
+                text = ""
+            update.message.reply_text(convert(text, dictionary))
 
-
-def katakana(update: Update, _: CallbackContext) -> None:
-    if update.message.reply_to_message is not None:
-        update.message.reply_text(
-            convert(update.message.reply_to_message.text if update.message.reply_to_message.text is not None else update.message.reply_to_message.caption, dictdata["Katakana"])
-        )
-
-
-def lontara(update: Update, _: CallbackContext) -> None:
-    if update.message.reply_to_message is not None:
-        update.message.reply_text(
-            convert(update.message.reply_to_message.text if update.message.reply_to_message.text is not None else update.message.reply_to_message.caption, dictdata["Lontara"])
-        )
+    return function
 
 
 def inlinequery(update: Update, context: CallbackContext) -> None:
@@ -211,9 +204,9 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("cyrillic", cyrillic))
-    dispatcher.add_handler(CommandHandler("katakana", katakana))
-    dispatcher.add_handler(CommandHandler("lontara", lontara))
+    dispatcher.add_handler(CommandHandler("cyrillic", genfunc(dictdata["Cyrillic"])))
+    dispatcher.add_handler(CommandHandler("katakana", genfunc(dictdata["Katakana"])))
+    dispatcher.add_handler(CommandHandler("lontara", genfunc(dictdata["Lontara"])))
 
     dispatcher.add_handler(InlineQueryHandler(inlinequery))
 

@@ -6,7 +6,16 @@ def main(do_rich=True):
         except ModuleNotFoundError:
             do_rich = False
 
-    import json
+    try:
+        import ujson
+
+        json = ujson
+    except ModuleNotFoundError:
+        try:
+            import json
+        except ModuleNotFoundError:
+            print("json module not found, can't output")
+
     import unicodedata
 
     def conditional_track(sequence, text):
@@ -533,7 +542,7 @@ def main(do_rich=True):
         ]
     )
 
-    out = json.dumps(data, indent=4)
+    out = json.dumps(data, indent=4, ensure_ascii=False)
     with open("dict.json", "w") as f:
         f.write(out)
 

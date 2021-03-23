@@ -2,7 +2,17 @@ import logging
 import os
 import scriptcon
 import re
-import json
+
+try:
+    import ujson
+
+    json = ujson
+except ModuleNotFoundError:
+    try:
+        import json
+    except ModuleNotFoundError:
+        print("json module not found, can't read dict")
+
 
 from telegram import (
     InlineQueryResultArticle,
@@ -27,6 +37,13 @@ if __name__ == "__main__":
     import sys
 
     parser = argparse.ArgumentParser(description="Runs TG bot")
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Enabled Debugging mode",
+    )
     if (sys.version_info[0] >= 3) and (sys.version_info[1] >= 9):
         parser.add_argument(
             "-r",
@@ -50,6 +67,7 @@ if __name__ == "__main__":
             help="Disables rich output",
         )
     do_rich = parser.parse_args().rich
+    debug = parser.parse_args().debug
 
 if do_rich:
     try:
@@ -60,7 +78,7 @@ if do_rich:
         do_rich = False
 
 logging_args = {
-    "level": logging.DEBUG,
+    "level": logging.DEBUG if debug else logging.INFO,
     "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 }
 if do_rich:

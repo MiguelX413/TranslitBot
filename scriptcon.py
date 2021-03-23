@@ -24,7 +24,7 @@ def convert(text, dictionary):
             if subdict.get("decomposed"):
                 text = unicodedata.normalize("NFD", text)
 
-            for sub_length in sorted(sub_lengths, reverse=True):
+            for sub_length in sub_lengths:
                 index = 0
                 while index <= len(text) - sub_length:
 

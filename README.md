@@ -1,2 +1,2 @@
-# KxelBot
-Telegram bot for the Kxel language
+# TranslitBot
+Telegram bot for transliteration
